@@ -19,6 +19,7 @@ import java.net.URL;
 public class HttpUrlConnHelper {
 
     private HttpURLConnection mHttpURLConnection;
+    public static String TAG = "HttpUrlConnHelper";
 
 
     /**
@@ -32,7 +33,8 @@ public class HttpUrlConnHelper {
 
         try {
             mHttpURLConnection = (HttpURLConnection) new URL(pHttpHelper.getURL()).openConnection();
-            Log.d("HttpReq", String.valueOf(pHttpHelper.getURl()));
+            Log.d(TAG+"HttpReq", String.valueOf(pHttpHelper.getURl()));
+            mHttpURLConnection.setDoInput(true);
 
             if (pHttpHelper.getHeaderType() != null) {
                 mHttpURLConnection.setRequestProperty("Content-Type", pHttpHelper.getHeaderType());
@@ -69,12 +71,12 @@ public class HttpUrlConnHelper {
                 pHttpHelper.setStatusMessage("Something went wrong,Try again");
             }
 
-            pHttpHelper.setStatusCode(String.valueOf(mHttpURLConnection.getResponseCode()));
+            pHttpHelper.setStatusCode(mHttpURLConnection.getResponseCode());
             pHttpHelper.setStatusMessage(mHttpURLConnection.getResponseMessage());
-            Log.d("response", pHttpHelper.getRawResponseData());
+            Log.d(TAG+" response"," "+pHttpHelper.getRawResponseData());
 
 
-            Log.d("Response",lResponse);
+            Log.d(TAG+" Response",lResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }

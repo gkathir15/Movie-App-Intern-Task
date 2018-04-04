@@ -10,7 +10,7 @@ public class HttpHelper {
 
     private  String mStatusMessage;
     private  String mRawResponseData;
-    private  String mStatusCode;
+    private  int mStatusCode;
     private  String mRequestType;
     private String mHeaderData;
     private String mHeaderType;
@@ -42,11 +42,11 @@ public class HttpHelper {
         this.mURl = mURl;
     }
 
-    public String getStatusCode() {
+    public int getStatusCode() {
         return mStatusCode;
     }
 
-    public void setStatusCode(String mStatusCode) {
+    public void setStatusCode(int mStatusCode) {
         this.mStatusCode = mStatusCode;
     }
 

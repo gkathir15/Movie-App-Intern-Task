@@ -5,7 +5,10 @@ package com.guru.nowplaying.constants;
  */
 
 public class Constants {
-    public static String ROOT_URL = "https://api.themoviedb.org/3/";
+
+    //Prefixing "/" followed
+
+    public static String ROOT_URL = "https://api.themoviedb.org/3/movie/";
     public static String API_KEY_V3="461e99d35de36a0e9680f40b1b06073c";
     public static String API_PREFIX = "?api_key=";
     public static String LANGUAGE = "language=en-US";
@@ -13,5 +16,7 @@ public class Constants {
     public static String CATEGORY_MOVIE = "movie/";
     public static String IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500/"; //resized images.
     public static String APPEND_TO_RESPONSE ="append_to_response=";
+    public static String PAGE= "page=";
+    public static String NOWPLAYING= "now_playing";
 
 }
