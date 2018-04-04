@@ -6,7 +6,7 @@ import android.util.Log;
  * Created by Guru on 04-04-2018.
  */
 
-public class MobieDataById {
+public class MovieDataById {
 
 
 

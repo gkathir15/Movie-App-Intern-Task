@@ -1,7 +1,9 @@
-package com.guru.nowplaying.helpers;
+package com.guru.nowplaying.helpers.http;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.guru.nowplaying.helpers.http.HttpHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

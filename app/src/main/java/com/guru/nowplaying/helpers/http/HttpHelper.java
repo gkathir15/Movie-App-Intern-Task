@@ -1,4 +1,4 @@
-package com.guru.nowplaying.helpers;
+package com.guru.nowplaying.helpers.http;
 
 import java.net.URL;
 

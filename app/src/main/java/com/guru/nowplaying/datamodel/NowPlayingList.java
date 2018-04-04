@@ -10,6 +10,15 @@ import com.guru.nowplaying.constants.Constants;
 
 public class NowPlayingList {
 
+    public NowPlayingList(String backdrop_path, String id, String title, String release_date, String vote, String poster_path) {
+        this.backdrop_path = backdrop_path;
+        this.id = id;
+        this.title = title;
+        this.release_date = release_date;
+        this.vote_average = vote;
+        this.poster_path = poster_path;
+    }
+
     private String mURL;
 
 

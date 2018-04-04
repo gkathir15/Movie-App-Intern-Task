@@ -25,6 +25,7 @@ public class JsonUtilHelper {
         }
         try {
              JSONArray jsonArray = mJsonObject.getJSONArray(pObjKey);
+             Log.d(TAG,"JSON Array Size"+jsonArray.length());
              lStripedArray = jsonArray.toString();
         } catch (JSONException e) {
             e.printStackTrace();

@@ -1,5 +1,9 @@
 package com.guru.nowplaying.constants;
 
+import com.guru.nowplaying.R;
+
+import java.util.jar.Manifest;
+
 /**
  * Created by Guru on 04-04-2018.
  */
@@ -17,6 +21,7 @@ public class Constants {
     public static String IMAGE_PREFIX = "https://image.tmdb.org/t/p/w500/"; //resized images.
     public static String APPEND_TO_RESPONSE ="append_to_response=";
     public static String PAGE= "page=";
-    public static String NOWPLAYING= "now_playing";
+    public static String NOW_PLAYING = "now_playing";
+    public static String DATABASE_NAME = R.string.app_name+"_DataBase";
 
 }

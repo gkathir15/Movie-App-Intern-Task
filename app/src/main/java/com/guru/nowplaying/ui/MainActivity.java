@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.guru.nowplaying.R;
 import com.guru.nowplaying.constants.Constants;
 import com.guru.nowplaying.datamodel.NowPlayingList;
-import com.guru.nowplaying.helpers.HttpHelper;
-import com.guru.nowplaying.helpers.HttpUrlConnHelper;
+import com.guru.nowplaying.helpers.http.HttpHelper;
+import com.guru.nowplaying.helpers.http.HttpUrlConnHelper;
 import com.guru.nowplaying.helpers.JsonParserHelper;
 import com.guru.nowplaying.helpers.JsonUtilHelper;
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mNowPlayingList = new NowPlayingList();
                 mQueryText = String.valueOf(mQueryTv.getText());
-                mHttpHelper.setURL(mNowPlayingList.constructURL(Constants.API_KEY_V3,Constants.ROOT_URL,Constants.PAGE+1,Constants.NOWPLAYING));
+                mHttpHelper.setURL(mNowPlayingList.constructURL(Constants.API_KEY_V3,Constants.ROOT_URL,Constants.PAGE+1,Constants.NOW_PLAYING));
                 mHttpHelper.setRequestType("GET");
                 new FetchMovieList().execute(mHttpHelper);
 
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected List<NowPlayingList> doInBackground(HttpHelper... httpHelpers) {
 
+
+
             HttpUrlConnHelper lHttpUrlConnHelper = new HttpUrlConnHelper();
             Log.d(TAG+"  URL",httpHelpers[0].getURL());
             try {
@@ -84,10 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 JsonParserHelper lJsonParserHelper = new JsonParserHelper();
                 JsonUtilHelper lJsonUtilHelper = new JsonUtilHelper();
                 return lJsonParserHelper.ParseNowPlayingList(lJsonUtilHelper.jsonObjectToArray("results",httpHelpers[0].getRawResponseData()));
-
-
-
-
             }
 
             return null;
