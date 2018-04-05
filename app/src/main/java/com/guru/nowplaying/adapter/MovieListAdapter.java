@@ -26,7 +26,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
 
     ArrayList<NowPlaying> mNowPlayArrayList;
-    OnItemClickListener mSetClickListener;
+    OnItemClickListener mOnItemClickListener;
     int mListItemView;
     public static String TAG = "MovieListAdapter";
 
@@ -58,6 +58,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         NowPlaying lNowPlaying = mNowPlayArrayList.get(position);
         TextView lTitle = holder.lTitle;
         ImageView lPoster = holder.lPoster;
+        lPoster.setContentDescription((CharSequence) lNowPlaying.getOverview());
         lTitle.setText(lNowPlaying.getTitle());
         //lTitle.set
         Picasso.get().load(Constants.IMAGE_PREFIX+ lNowPlaying.getPoster_path()).into(lPoster);
@@ -73,13 +74,13 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         //return 0;
     }
 
-    public void setClickListener(OnItemClickListener onItemClickListener)
+    public void setClickListener(OnItemClickListener pOnItemClickListener)
     {
-        this.mSetClickListener = onItemClickListener;
+        this.mOnItemClickListener = pOnItemClickListener;
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements OnItemClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements OnItemClickListener, View.OnClickListener {
 
         TextView lTitle;
         ImageView lPoster;
@@ -88,13 +89,20 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             super(itemView);
             lTitle = itemView.findViewById(R.id.movie_title);
             lPoster = itemView.findViewById(R.id.poster);
-           // itemView.setOnClickListener(this);
+           itemView.setOnClickListener(this);
+
+        }
+
+
+        @Override
+        public void onClick(View View, int Position) {
+           mOnItemClickListener.onClick(View,Position);
 
         }
 
         @Override
-        public void onClick(int pPosition) {
-            onClick(getAdapterPosition());
+        public void onClick(View v) {
+            mOnItemClickListener.onClick(v,getAdapterPosition());
         }
     }
 }

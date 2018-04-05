@@ -21,6 +21,7 @@ import com.guru.nowplaying.helpers.JsonUtilHelper;
 import com.guru.nowplaying.helpers.db.NowPlayListDBHelper;
 import com.guru.nowplaying.helpers.http.HttpHelper;
 import com.guru.nowplaying.helpers.http.HttpUrlConnHelper;
+import com.guru.nowplaying.interfaces.OnItemClickListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentNowPlayingList extends Fragment {
+public class FragmentNowPlayingList extends Fragment implements OnItemClickListener {
 
     RecyclerView mNowPlayRecyclerView;
     HttpHelper mHttpHelper = new HttpHelper();
@@ -64,10 +65,18 @@ public class FragmentNowPlayingList extends Fragment {
         mNowPlayRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mMovieListAdapter = new MovieListAdapter(R.layout.movie_poster_view,mNowPlayingArrayList);
         mNowPlayRecyclerView.setAdapter(mMovieListAdapter);
-       // mMovieListAdapter.setClickListener(this);
+       mMovieListAdapter.setClickListener((OnItemClickListener) this);
         mHttpHelper = new HttpHelper();
         mHttpHelper.setRequestType("GET");
         return lMovieListView;
+    }
+
+
+
+    @Override
+    public void onClick(View View, int pPosition) {
+        Log.d(TAG,""+"\n"+pPosition+"\n"+mNowPlayingArrayList.get(pPosition).getId()+"\n"+mNowPlayingArrayList.get(pPosition).getTitle());
+
     }
 
     public class FetchMovieList extends AsyncTask<HttpHelper,Void,List<NowPlaying>>
