@@ -87,6 +87,7 @@ public class NowPlayListDBHelper {
         ContentValues lContentValues = new ContentValues();
         for(NowPlayingList pNowPlayingList:pArrayList)
         {
+
             lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_BACKDROP_PATH,pNowPlayingList.getBackdrop_path());
             lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_ID,pNowPlayingList.getId());
             lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_TITLE,pNowPlayingList.getTitle());
