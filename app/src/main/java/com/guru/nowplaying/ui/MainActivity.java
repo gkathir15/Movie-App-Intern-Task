@@ -3,67 +3,76 @@ package com.guru.nowplaying.ui;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.guru.nowplaying.R;
+import com.guru.nowplaying.adapter.MovieListAdapter;
 import com.guru.nowplaying.constants.Constants;
 import com.guru.nowplaying.datamodel.NowPlayingList;
+import com.guru.nowplaying.helpers.db.AppDBHelper;
+import com.guru.nowplaying.helpers.db.NowPlayListDBHelper;
 import com.guru.nowplaying.helpers.http.HttpHelper;
 import com.guru.nowplaying.helpers.http.HttpUrlConnHelper;
 import com.guru.nowplaying.helpers.JsonParserHelper;
 import com.guru.nowplaying.helpers.JsonUtilHelper;
+import com.guru.nowplaying.interfaces.OnItemClickListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener {
 
-    EditText mQueryTv;
-    Button mQueryButton;
-    String mQueryText;
-    TextView mResponseTv;
-    TextView mResponseMessageTv;
+
+    RecyclerView mNowPlayRecyclerView;
     HttpHelper mHttpHelper = new HttpHelper();
-    NowPlayingList mNowPlayingList;
+    NowPlayingList mNowPlayingList = new NowPlayingList();
     public static String TAG = "MainActivity";
+    MovieListAdapter mMovieListAdapter;
+    ArrayList<NowPlayingList> mNowPlayingArrayList = new ArrayList<>();
+    NowPlayListDBHelper mNowPlayListDBHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mNowPlayRecyclerView = findViewById(R.id.now_play_Recycler);
+        mNowPlayListDBHelper = new NowPlayListDBHelper(this);
+       // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
+        mNowPlayListDBHelper = new NowPlayListDBHelper(this);
 
-        mQueryTv = findViewById(R.id.query);
-        mQueryButton = findViewById(R.id.makeRequest);
-        mResponseTv = findViewById(R.id.response);
-        mResponseMessageTv = findViewById(R.id.responsecode);
+        //hav network calls and db retrievals
+        mHttpHelper.setURL(mNowPlayingList.constructURL(Constants.API_KEY_V3,Constants.ROOT_URL,"1",Constants.NOW_PLAYING));
+        new FetchMovieList().execute(mHttpHelper);
 
-        mQueryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mNowPlayingList = new NowPlayingList();
-                mQueryText = String.valueOf(mQueryTv.getText());
-                mHttpHelper.setURL(mNowPlayingList.constructURL(Constants.API_KEY_V3,Constants.ROOT_URL,Constants.PAGE+1,Constants.NOW_PLAYING));
-                mHttpHelper.setRequestType("GET");
-                new FetchMovieList().execute(mHttpHelper);
+        mNowPlayRecyclerView.setLayoutManager(new GridLayoutManager(this,3));
+        mMovieListAdapter = new MovieListAdapter(R.layout.movie_poster_view,mNowPlayingArrayList);
+        mNowPlayRecyclerView.setAdapter(mMovieListAdapter);
+        mMovieListAdapter.setClickListener(this);
+        mHttpHelper = new HttpHelper();
+        mHttpHelper.setRequestType("GET");
 
 
 
-            }
-        });
 
 
 
 
 
     }
+
+    @Override
+    public void onClick(int pPosition) {
+
+    }
+
     public class FetchMovieList extends AsyncTask<HttpHelper,Void,List<NowPlayingList>>
     {
 
@@ -85,8 +94,19 @@ public class MainActivity extends AppCompatActivity {
             {
                 JsonParserHelper lJsonParserHelper = new JsonParserHelper();
                 JsonUtilHelper lJsonUtilHelper = new JsonUtilHelper();
-                return lJsonParserHelper.ParseNowPlayingList(lJsonUtilHelper.jsonObjectToArray("results",httpHelpers[0].getRawResponseData()));
+
+                mNowPlayingArrayList.addAll(lJsonParserHelper.ParseNowPlayingList(lJsonUtilHelper.jsonObjectToArray("results",httpHelpers[0].getRawResponseData())));
+                Log.d(TAG,"ArraylistSize 1111  "+mNowPlayingArrayList.size());
+                mNowPlayListDBHelper.updateNowplayingList(mNowPlayingArrayList);
+               return mNowPlayingArrayList;
             }
+
+           // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
+
+            Log.d(TAG,"Size form db"+mNowPlayListDBHelper.retrieveNowPlayingList().size());
+
+            Log.d(TAG,"ArraylistSize 1111  "+mNowPlayingArrayList.size());
+
 
             return null;
         }
@@ -99,10 +119,14 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(TAG+"Status code"," "+mHttpHelper.getStatusCode());
 
-            mResponseMessageTv.setText(""+mHttpHelper.getStatusCode());
-            mResponseMessageTv.append(""+mHttpHelper.getStatusMessage());
+            Log.d(TAG,""+mHttpHelper.getStatusCode());
+            Log.d(TAG,""+mHttpHelper.getStatusMessage());
+
+            mMovieListAdapter.notifyDataSetChanged();
 
            if(nowPlayingLists != null) {
+
+
 
 
                Log.d(TAG + "Result List size", String.valueOf(nowPlayingLists.size()));

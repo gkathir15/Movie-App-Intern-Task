@@ -11,6 +11,7 @@ import com.guru.nowplaying.datamodel.NowPlayingList;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,10 +27,10 @@ public class JsonParserHelper {
 
 
 
-    public List<NowPlayingList> ParseNowPlayingList(String pJsonResponse)
+    public ArrayList<NowPlayingList> ParseNowPlayingList(String pJsonResponse)
     {
         Log.d(TAG+"raw Response to parser",pJsonResponse);
-        TypeReference<List<NowPlayingList>>lTypeReference = new TypeReference<List<NowPlayingList>>() {
+        TypeReference<ArrayList<NowPlayingList>>lTypeReference = new TypeReference<ArrayList<NowPlayingList>>() {
         };
         mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
         mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -37,7 +38,7 @@ public class JsonParserHelper {
         mObjectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,false);
         mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS,false);
        // mObjectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE,true);
-        List<NowPlayingList> lNowPlayingList = null;
+        ArrayList<NowPlayingList> lNowPlayingList = null;
         try {
             lNowPlayingList = mObjectMapper.readValue(pJsonResponse,lTypeReference);
         } catch (IOException e) {
