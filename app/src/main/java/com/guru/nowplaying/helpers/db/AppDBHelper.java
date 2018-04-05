@@ -1,14 +1,10 @@
 package com.guru.nowplaying.helpers.db;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.guru.nowplaying.constants.Constants;
-import com.guru.nowplaying.datamodel.NowPlayingList;
-
-import java.util.ArrayList;
 
 /**
  * Created by Guru on 04-04-2018.

@@ -15,6 +15,12 @@ public class JsonUtilHelper {
     JSONObject mJsonObject;
     public static String TAG ="JsonUtilHelper";
 
+    /**
+     *
+     * @param pObjKey
+     * @param pRawJson
+     * @return
+     */
     public String jsonObjectToArray(String pObjKey,String pRawJson)
     {
         String lStripedArray= "error";

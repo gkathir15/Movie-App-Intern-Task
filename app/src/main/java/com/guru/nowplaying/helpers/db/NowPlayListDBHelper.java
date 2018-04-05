@@ -3,13 +3,10 @@ package com.guru.nowplaying.helpers.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import com.guru.nowplaying.constants.Constants;
 import com.guru.nowplaying.constants.NowPlayingDBContract;
-import com.guru.nowplaying.datamodel.NowPlayingList;
+import com.guru.nowplaying.datamodel.NowPlaying;
 
 import java.util.ArrayList;
 
@@ -30,6 +27,10 @@ public class NowPlayListDBHelper {
         this.mContext = mContext;
     }
 
+    /**
+     *
+     * @param pSqLiteDatabase
+     */
     public static void createNowPlayingTable(SQLiteDatabase pSqLiteDatabase)
     {
 
@@ -45,19 +46,23 @@ public class NowPlayListDBHelper {
 
     }
 
-    public ArrayList<NowPlayingList> retrieveNowPlayingList()
+    /**
+     *
+     * @return
+     */
+    public ArrayList<NowPlaying> retrieveNowPlayingList()
     {
         mSqLiteDatabase = new AppDBHelper(mContext).getReadableDatabase();
-        ArrayList<NowPlayingList> lNowPlayingListArrayList = new ArrayList<>();
+        ArrayList<NowPlaying> lNowPlayingListArray = new ArrayList<>();
         String lSelectQuery = "SELECT * FROM "+ NowPlayingDBContract.NowPlayingEntry.TABLE_NAME;
         Cursor lCursor = mSqLiteDatabase.rawQuery(lSelectQuery,null);
 
-        //NowPlayingList(String backdrop_path, String id, String title, String release_date, String vote, String poster_path)
+        //NowPlaying(String backdrop_path, String id, String title, String release_date, String vote, String poster_path)
 
         try {
             if (lCursor.moveToFirst()) {
                 do {                                        //Adding data Via Constructor.
-                    NowPlayingList lNowPlayingList = new NowPlayingList(
+                    NowPlaying lNowPlaying = new NowPlaying(
                             lCursor.getString(lCursor.getColumnIndex(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_BACKDROP_PATH)),
                             lCursor.getString(lCursor.getColumnIndex(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_ID)),
                             lCursor.getString(lCursor.getColumnIndex(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_TITLE)),
@@ -65,14 +70,14 @@ public class NowPlayListDBHelper {
                             lCursor.getString(lCursor.getColumnIndex(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_VOTE)),
                             lCursor.getString(lCursor.getColumnIndex(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_POSTER)));
 
-                    lNowPlayingListArrayList.add(lNowPlayingList);
+                    lNowPlayingListArray.add(lNowPlaying);
                 } while (lCursor.moveToNext());
 
             }
         }finally {
             lCursor.close();
             mSqLiteDatabase.close();
-            return lNowPlayingListArrayList;
+            return lNowPlayingListArray;
         }
 
 
@@ -80,35 +85,35 @@ public class NowPlayListDBHelper {
 
     }
 
-    public void updateNowplayingList(ArrayList<NowPlayingList> pArrayList)
+    /**
+     *
+     * @param pArrayList
+     */
+    public void updateNowPlayingList(ArrayList<NowPlaying> pArrayList)
     {
         mSqLiteDatabase = new AppDBHelper(mContext).getWritableDatabase();
 
         ContentValues lContentValues = new ContentValues();
-        for(NowPlayingList pNowPlayingList:pArrayList)
+        for(NowPlaying pNowPlaying :pArrayList)
         {
 
-            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_BACKDROP_PATH,pNowPlayingList.getBackdrop_path());
-            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_ID,pNowPlayingList.getId());
-            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_TITLE,pNowPlayingList.getTitle());
-            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_POSTER,pNowPlayingList.getPoster_path());
-            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_VOTE,pNowPlayingList.getVote_average());
-            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_RELEASE_DATE,pNowPlayingList.getRelease_date());
+            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_BACKDROP_PATH, pNowPlaying.getBackdrop_path());
+            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_ID, pNowPlaying.getId());
+            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_TITLE, pNowPlaying.getTitle());
+            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_POSTER, pNowPlaying.getPoster_path());
+            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_VOTE, pNowPlaying.getVote_average());
+            lContentValues.put(NowPlayingDBContract.NowPlayingEntry.COLUMN_NAME_RELEASE_DATE, pNowPlaying.getRelease_date());
 
-            try {
-               mSqLiteDatabase.insertOrThrow(NowPlayingDBContract.NowPlayingEntry.TABLE_NAME, null, lContentValues);
-            }catch (SQLiteConstraintException e)
-            {
-                Log.d(TAG,"Sql constraint exception");
-            }finally {
 
+               mSqLiteDatabase.insertWithOnConflict(NowPlayingDBContract.NowPlayingEntry.TABLE_NAME, null, lContentValues,SQLiteDatabase.CONFLICT_IGNORE);
             }
+        mSqLiteDatabase.close();
 
         }
-        mSqLiteDatabase.close();
+
 
 
     }
 
 
-}
+

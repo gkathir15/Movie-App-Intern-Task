@@ -12,8 +12,7 @@ import android.widget.TextView;
 
 import com.guru.nowplaying.R;
 import com.guru.nowplaying.constants.Constants;
-import com.guru.nowplaying.datamodel.NowPlayingList;
-import com.guru.nowplaying.helpers.db.NowPlayListDBHelper;
+import com.guru.nowplaying.datamodel.NowPlaying;
 import com.guru.nowplaying.interfaces.OnItemClickListener;
 import com.squareup.picasso.Picasso;
 
@@ -26,16 +25,16 @@ import java.util.ArrayList;
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
 
 
-    ArrayList<NowPlayingList> mNowPlayArrayList;
+    ArrayList<NowPlaying> mNowPlayArrayList;
     OnItemClickListener mSetClickListener;
     int mListItemView;
     public static String TAG = "MovieListAdapter";
 
 
 
-    public MovieListAdapter(int pListItem,ArrayList<NowPlayingList> pNowPlayingList)
+    public MovieListAdapter(int pListItem,ArrayList<NowPlaying> pNowPlaying)
     {
-        mNowPlayArrayList = pNowPlayingList;
+        mNowPlayArrayList = pNowPlaying;
         mListItemView = pListItem;
         Log.d(TAG+" constructor","Recieved Size"+mNowPlayArrayList.size());
 //        Log.d(TAG,mNowPlayArrayList.get(0).getTitle());
@@ -56,11 +55,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull MovieListAdapter.ViewHolder holder, int position) {
 
-        NowPlayingList lNowPlayingList = mNowPlayArrayList.get(position);
+        NowPlaying lNowPlaying = mNowPlayArrayList.get(position);
         TextView lTitle = holder.lTitle;
         ImageView lPoster = holder.lPoster;
-        lTitle.setText(" "+lNowPlayingList.getTitle());
-        Picasso.get().load(Constants.IMAGE_PREFIX+lNowPlayingList.getPoster_path()).into(lPoster);
+        lTitle.setText(lNowPlaying.getTitle());
+        //lTitle.set
+        Picasso.get().load(Constants.IMAGE_PREFIX+ lNowPlaying.getPoster_path()).into(lPoster);
         Log.d(TAG,"OnBindview"+mNowPlayArrayList.size());
 
     }

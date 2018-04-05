@@ -8,11 +8,11 @@ import com.guru.nowplaying.constants.Constants;
  * Created by Guru on 04-04-2018.
  */
 
-public class NowPlayingList {
-    public NowPlayingList() {
+public class NowPlaying {
+    public NowPlaying() {
     }
 
-    public NowPlayingList(String backdrop_path, String id, String title, String release_date, String vote, String poster_path) {
+    public NowPlaying(String backdrop_path, String id, String title, String release_date, String vote, String poster_path) {
         this.backdrop_path = backdrop_path;
         this.id = id;
         this.title = title;
