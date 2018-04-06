@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 public class JsonUtilHelper {
 
-    JSONObject mJsonObject;
+    JSONObject mJsonObject ;
     public static String TAG ="JsonUtilHelper";
 
     /**
@@ -37,7 +37,37 @@ public class JsonUtilHelper {
             e.printStackTrace();
         }
 
-        Log.d(TAG,lStripedArray);
+        Log.d(TAG,"striped array =   "+lStripedArray);
+
+
+        return lStripedArray;
+    }
+
+    /**
+     *
+     * @param pObjKey
+     * @param pNestedKey
+     * @param pRawJson
+     * @return
+     */
+    public String jsonNestedObjectToArray(String pObjKey,String pNestedKey,String pRawJson)
+    {
+        String lStripedArray= "error";
+        try {
+            mJsonObject = new JSONObject(pRawJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            JSONObject lNestedJsonObject = mJsonObject.getJSONObject(pObjKey);
+            JSONArray jsonArray = lNestedJsonObject.getJSONArray(pNestedKey);
+            Log.d(TAG,"JSON Array Size"+jsonArray.length());
+            lStripedArray = jsonArray.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG,"striped array =   "+lStripedArray);
 
 
         return lStripedArray;

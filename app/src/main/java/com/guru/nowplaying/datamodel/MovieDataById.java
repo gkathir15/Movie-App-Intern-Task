@@ -2,147 +2,146 @@ package com.guru.nowplaying.datamodel;
 
 import android.util.Log;
 
+import com.guru.nowplaying.constants.Constants;
+
 /**
  * Created by Guru on 04-04-2018.
  */
 
 public class MovieDataById {
 
+    private String vote_average;
+    private String runtime;
+    private String id;
+    private String title;
+    private String original_title;
+    private String backdrop_path;
+    private String status;
+    private String homepage;
+    private String overview;
+    private String release_date;
+    private String poster_path;
+    private String tagline;
+    private boolean isFavourite;
 
+    public boolean isFavourite() {
+        return isFavourite;
+    }
 
-        private String mBackdrop,mMovieID,mTitle,mOverview,mPopularity,mPoster,mReleaseDate,mTagline,mHomepage,mVote,mVoteCount;
-        private String mVideoId,mVideoKey,Site;
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
+    }
 
-        public String getmBackdrop() {
-            return mBackdrop;
-        }
+    public String getVote_average() {
+        return vote_average;
+    }
 
-        public void setmBackdrop(String mBackdrop) {
-            this.mBackdrop = mBackdrop;
-        }
+    public void setVote_average(String vote_average) {
+        this.vote_average = vote_average;
+    }
 
-        public String getmMovieID() {
-            return mMovieID;
-        }
+    public String getRuntime() {
+        return runtime;
+    }
 
-        public void setmMovieID(String mMovieID) {
-            this.mMovieID = mMovieID;
-        }
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
 
-        public String getmTitle() {
-            return mTitle;
-        }
+    public String getId() {
+        return id;
+    }
 
-        public void setmTitle(String mTitle) {
-            this.mTitle = mTitle;
-        }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-        public String getmOverview() {
-            return mOverview;
-        }
+    public String getTitle() {
+        return title;
+    }
 
-        public void setmOverview(String mOverview) {
-            this.mOverview = mOverview;
-        }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-        public String getmPopularity() {
-            return mPopularity;
-        }
+    public String getOriginal_title() {
+        return original_title;
+    }
 
-        public void setmPopularity(String mPopularity) {
-            this.mPopularity = mPopularity;
-        }
+    public void setOriginal_title(String original_title) {
+        this.original_title = original_title;
+    }
 
-        public String getmPoster() {
-            return mPoster;
-        }
+    public String getBackdrop_path() {
+        return backdrop_path;
+    }
 
-        public void setmPoster(String mPoster) {
-            this.mPoster = mPoster;
-        }
+    public void setBackdrop_path(String backdrop_path) {
+        this.backdrop_path = backdrop_path;
+    }
 
-        public String getmReleaseDate() {
-            return mReleaseDate;
-        }
+    public String getStatus() {
+        return status;
+    }
 
-        public void setmReleaseDate(String mReleaseDate) {
-            this.mReleaseDate = mReleaseDate;
-        }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-        public String getmTagline() {
-            return mTagline;
-        }
+    public String getHomepage() {
+        return homepage;
+    }
 
-        public void setmTagline(String mTagline) {
-            this.mTagline = mTagline;
-        }
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
+    }
 
-        public String getmHomepage() {
-            return mHomepage;
-        }
+    public String getOverview() {
+        return overview;
+    }
 
-        public void setmHomepage(String mHomepage) {
-            this.mHomepage = mHomepage;
-        }
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
 
-        public String getmVote() {
-            return mVote;
-        }
+    public String getRelease_date() {
+        return release_date;
+    }
 
-        public void setmVote(String mVote) {
-            this.mVote = mVote;
-        }
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
+    }
 
-        public String getmVoteCount() {
-            return mVoteCount;
-        }
+    public String getPoster_path() {
+        return poster_path;
+    }
 
-        public void setmVoteCount(String mVoteCount) {
-            this.mVoteCount = mVoteCount;
-        }
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
+    }
 
-        public String getmVideoId() {
-            return mVideoId;
-        }
+    public String getTagline() {
+        return tagline;
+    }
 
-        public void setmVideoId(String mVideoId) {
-            this.mVideoId = mVideoId;
-        }
+    public void setTagline(String tagline) {
+        this.tagline = tagline;
+    }
 
-        public String getmVideoKey() {
-            return mVideoKey;
-        }
-
-        public void setmVideoKey(String mVideoKey) {
-            this.mVideoKey = mVideoKey;
-        }
-
-        public String getSite() {
-            return Site;
-        }
-
-        public void setSite(String site) {
-            Site = site;
-        }
-
-        /**
-         *Constructs the url string as per api docs for getting movie by id and appended additional info
-         * @param pLanguage
-         * @param pApiKey
-         * @param pBasePath
-         * @param pCategory
-         * @param pId
-         * @return
-         */
-
-        public String constructURL(String pLanguage, String pApiKey, String pBasePath, String pCategory, String pId)
+    /**
+     *
+     * @param pMovieID
+     * @return the constructed URl
+     */
+    public String constructURL(String pMovieID)
         {
 
-            //example https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US
+            https://api.themoviedb.org/3/movie/284054?api_key=461e99d35de36a0e9680f40b1b06073c&append_to_response=videos,person
+            // append to response of youtube videos and cast data;
 
 
-            Log.d("ConstructedURL",pBasePath+pCategory+pId+pApiKey+"&"+pLanguage);
-            return pBasePath+pCategory+pId+pApiKey+"&"+pLanguage;
+            Log.d("ConstructedURL",Constants.ROOT_URL+pMovieID+Constants.API_PREFIX+Constants.API_KEY_V3+"&"+Constants.APPEND_TO_RESPONSE+Constants.VIDEOS+","+Constants.CREDITS);
+            return Constants.ROOT_URL+pMovieID+Constants.API_PREFIX+Constants.API_KEY_V3+"&"+Constants.APPEND_TO_RESPONSE+Constants.VIDEOS+","+Constants.CREDITS;
 
         }
     }

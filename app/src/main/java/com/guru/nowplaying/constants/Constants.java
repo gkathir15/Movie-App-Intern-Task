@@ -23,5 +23,7 @@ public class Constants {
     public static String PAGE= "page=";
     public static String NOW_PLAYING = "now_playing";
     public static String DATABASE_NAME = R.string.app_name+"_DataBase.db";
+    public static String VIDEOS = "videos";
+    public static String CREDITS = "credits";
 
 }

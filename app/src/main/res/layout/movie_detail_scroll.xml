@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.guru.nowplaying.ui.MovieDetailActivity"
+    tools:showIn="@layout/activity_movie_detail">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/movie_poster"
+            android:layout_width="120dp"
+            android:layout_height="180dp"
+            android:contentDescription="TODO"
+            tools:src="@mipmap/placeholder"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_toEndOf="@+id/movie_poster"
+            android:textSize="18sp"
+            tools:text="Madmax Fury"
+            android:id="@+id/movie_title"
+            />
+
+        <TextView
+            android:id="@+id/tag_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/movie_title"
+            android:layout_below="@+id/movie_title"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            tools:text="The run for oil" />
+
+        <TextView
+            android:id="@+id/movie_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tag_line"
+            android:layout_below="@+id/tag_line"
+            android:layout_marginTop="21dp"
+            tools:text="King T'Challa returns home from America to the reclusive, technologically advanced African nation of Wakanda to serve as his country's new leader. However, T'Challa soon finds that he is challenged for the throne by factions within his own country as well as without.  Using powers reserved to Wakandan kings, T'Challa assumes the Black Panther mantel to join with girlfriend Nakia, the queen-mother, his princess-kid sister,  members of the Dora Milaje , and an American secret agent, to prevent Wakanda from being dragged into a world war." />
+
+
+        <TextView
+            android:id="@+id/web_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_description"
+            android:layout_margin="10dp"
+            android:layout_alignEnd="@id/movie_description"
+            tools:text="www.madmaxfuruy.com" />
+
+       <!--<ProgressBar
+            android:id="@+id/votes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/movie_description" /> -->
+
+
+    </RelativeLayout>
+
+
+
+
+
+</android.support.v4.widget.NestedScrollView>
