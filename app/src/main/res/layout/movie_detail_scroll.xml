@@ -28,6 +28,7 @@
             android:textSize="18sp"
             tools:text="Madmax Fury"
             android:id="@+id/movie_title"
+            android:padding="4dp"
             />
 
         <TextView
@@ -39,7 +40,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            tools:text="The run for oil" />
+            tools:text="The run for oil"
+            android:padding="4dp"/>
 
         <TextView
             android:id="@+id/movie_description"
@@ -48,6 +50,7 @@
             android:layout_alignStart="@+id/tag_line"
             android:layout_below="@+id/tag_line"
             android:layout_marginTop="21dp"
+            android:padding="4dp"
             tools:text="King T'Challa returns home from America to the reclusive, technologically advanced African nation of Wakanda to serve as his country's new leader. However, T'Challa soon finds that he is challenged for the throne by factions within his own country as well as without.  Using powers reserved to Wakandan kings, T'Challa assumes the Black Panther mantel to join with girlfriend Nakia, the queen-mother, his princess-kid sister,  members of the Dora Milaje , and an American secret agent, to prevent Wakanda from being dragged into a world war." />
 
 
@@ -58,6 +61,8 @@
             android:layout_below="@id/movie_description"
             android:layout_margin="10dp"
             android:layout_alignEnd="@id/movie_description"
+            android:padding="4dp"
+            android:layout_alignBaseline="@id/movie_poster"
             tools:text="www.madmaxfuruy.com" />
 
        <!--<ProgressBar

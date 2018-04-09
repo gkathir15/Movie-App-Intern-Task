@@ -37,7 +37,7 @@ public class JsonParserHelper {
 
         ArrayList<NowPlaying> lNowPlaying = null;
         try {
-            lNowPlaying = mObjectMapper.readValue(pJsonResponse,lTypeReference);
+            lNowPlaying = mObjectMapper.readValue(pJsonResponse,new TypeReference<ArrayList<NowPlaying>>() {});
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(TAG,"Problem with parsing");

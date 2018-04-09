@@ -20,12 +20,11 @@ import com.guru.nowplaying.datamodel.NowPlaying;
 import com.guru.nowplaying.helpers.JsonParserHelper;
 import com.guru.nowplaying.helpers.JsonUtilHelper;
 import com.guru.nowplaying.helpers.SharedPreferencesHelper;
-import com.guru.nowplaying.helpers.db.NowPlayListDBHelper;
+import com.guru.nowplaying.helpers.db.MovieDBHelper;
 import com.guru.nowplaying.helpers.http.HttpHelper;
 import com.guru.nowplaying.helpers.http.HttpUrlConnHelper;
 import com.guru.nowplaying.interfaces.OnItemClickListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
     public static String TAG = "MainActivity";
     MovieListAdapter mMovieListAdapter;
     ArrayList<NowPlaying> mNowPlayingArrayList = new ArrayList<>();
-    NowPlayListDBHelper mNowPlayListDBHelper;
+    MovieDBHelper mMovieDBHelper;
     SharedPreferencesHelper mSharedPreferencesHelper = new SharedPreferencesHelper();
 
 
@@ -57,14 +56,13 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
         View lMovieListView = inflater.inflate(R.layout.fragment_now_playing_list, container, false);
 
         mNowPlayRecyclerView = lMovieListView.findViewById(R.id.now_play_Recycler);
-        mNowPlayListDBHelper = new NowPlayListDBHelper(getContext());
+        mMovieDBHelper = new MovieDBHelper(getContext());
         // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
-        mNowPlayListDBHelper = new NowPlayListDBHelper(getContext());
+        mMovieDBHelper = new MovieDBHelper(getContext());
         mHttpHelper.setRequestType("GET");
         //hav network calls and db retrievals
         mHttpHelper.setURL(mNowPlaying.constructURL(Constants.API_KEY_V3,Constants.ROOT_URL,"1",Constants.NOW_PLAYING));
-        new FetchMovieList().execute(mHttpHelper);
-
+        new FetchMovieList(mHttpHelper).execute();
         mNowPlayRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mMovieListAdapter = new MovieListAdapter(R.layout.movie_poster_view,mNowPlayingArrayList);
         mNowPlayRecyclerView.setAdapter(mMovieListAdapter);
@@ -88,6 +86,10 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
 
     public class FetchMovieList extends AsyncTask<HttpHelper,Void,List<NowPlaying>>
     {
+        HttpHelper mHttpHelper;
+        FetchMovieList(HttpHelper pHttp){
+            mHttpHelper = pHttp;
+        }
 
         @Override
         protected List<NowPlaying> doInBackground(HttpHelper... httpHelpers) {
@@ -96,30 +98,30 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
         if (!mSharedPreferencesHelper.isNowPlayDataPresent(getContext()))
         {
             HttpUrlConnHelper lHttpUrlConnHelper = new HttpUrlConnHelper();
-            Log.d(TAG+"  URL",httpHelpers[0].getURL());
+            Log.d(TAG+"  URL",mHttpHelper.getURL());
             try {
-                lHttpUrlConnHelper.httpRequest(httpHelpers[0]);
-            } catch (IOException e) {
+                lHttpUrlConnHelper.httpRequest(mHttpHelper);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
-            if (httpHelpers[0].getStatusCode() == 200)
+            if (mHttpHelper.getStatusCode() == 200)
             {
                 JsonParserHelper lJsonParserHelper = new JsonParserHelper();
                 JsonUtilHelper lJsonUtilHelper = new JsonUtilHelper();
 
 
                 Log.d(TAG,"ArraylistSize 1111  "+mNowPlayingArrayList.size());
-                mNowPlayListDBHelper.updateNowPlayingList(lJsonParserHelper.ParseNowPlayingList(lJsonUtilHelper.jsonObjectToArray("results",httpHelpers[0].getRawResponseData())));
-                mNowPlayingArrayList.addAll(mNowPlayListDBHelper.retrieveNowPlayingList());
+                mMovieDBHelper.updateNowPlayingData(lJsonParserHelper.ParseNowPlayingList(lJsonUtilHelper.jsonObjectToArray("results",mHttpHelper.getRawResponseData())));
+                mNowPlayingArrayList.addAll(mMovieDBHelper.retrieveForNowPlayingList());
                 mSharedPreferencesHelper.setNowPlayingDataStored(true,getContext());
                 Log.d(TAG,"Retrived from db Size"+mNowPlayingArrayList.size());
                 return mNowPlayingArrayList;
             }
         }
         else {
-            mNowPlayingArrayList.addAll(mNowPlayListDBHelper.retrieveNowPlayingList());
+            mNowPlayingArrayList.addAll(mMovieDBHelper.retrieveForNowPlayingList());
             Log.d(TAG,"Retrived from db Size"+mNowPlayingArrayList.size());
             return mNowPlayingArrayList;
 
@@ -127,7 +129,7 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
 
             // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
 
-            Log.d(TAG,"Size form db"+mNowPlayListDBHelper.retrieveNowPlayingList().size());
+            Log.d(TAG,"Size form db"+ mMovieDBHelper.retrieveForNowPlayingList().size());
 
             Log.d(TAG,"ArraylistSize 1111  "+mNowPlayingArrayList.size());
 
@@ -141,10 +143,10 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
 
 
 
-            Log.d(TAG+"Status code"," "+mHttpHelper.getStatusCode());
+            Log.d(TAG+"Status code"," "+ FragmentNowPlayingList.this.mHttpHelper.getStatusCode());
 
-            Log.d(TAG,""+mHttpHelper.getStatusCode());
-            Log.d(TAG,""+mHttpHelper.getStatusMessage());
+            Log.d(TAG,""+ FragmentNowPlayingList.this.mHttpHelper.getStatusCode());
+            Log.d(TAG,""+ FragmentNowPlayingList.this.mHttpHelper.getStatusMessage());
 
             mMovieListAdapter.notifyDataSetChanged();
 

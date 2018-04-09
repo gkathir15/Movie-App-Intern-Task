@@ -23,6 +23,56 @@ public class MovieDataById {
     private String poster_path;
     private String tagline;
     private boolean isFavourite;
+    private String youtubeVideoKey;
+    private String castJsonArray;
+    private boolean isDetailPresent;
+
+    public MovieDataById(String vote_average, String runtime, String id, String title, String original_title, String backdrop_path, String status, String homepage, String overview, String release_date, String poster_path, String tagline, boolean isFavourite, String youtubeVideoKey, String castJsonArray, boolean isDetailPresent) {
+        this.vote_average = vote_average;
+        this.runtime = runtime;
+        this.id = id;
+        this.title = title;
+        this.original_title = original_title;
+        this.backdrop_path = backdrop_path;
+        this.status = status;
+        this.homepage = homepage;
+        this.overview = overview;
+        this.release_date = release_date;
+        this.poster_path = poster_path;
+        this.tagline = tagline;
+        this.isFavourite = isFavourite;
+        this.youtubeVideoKey = youtubeVideoKey;
+        this.castJsonArray = castJsonArray;
+        this.isDetailPresent = isDetailPresent;
+    }
+
+    public MovieDataById() {
+
+    }
+
+    public boolean isDetailPresent() {
+        return isDetailPresent;
+    }
+
+    public void setDetailPresent(boolean detailPresent) {
+        isDetailPresent = detailPresent;
+    }
+
+    public String getCastJsonArray() {
+        return castJsonArray;
+    }
+
+    public void setCastJsonArray(String castJsonArray) {
+        this.castJsonArray = castJsonArray;
+    }
+
+    public String getYoutubeVideoKey() {
+        return youtubeVideoKey;
+    }
+
+    public void setYoutubeVideoKey(String youtubeVideoKey) {
+        this.youtubeVideoKey = youtubeVideoKey;
+    }
 
     public boolean isFavourite() {
         return isFavourite;
