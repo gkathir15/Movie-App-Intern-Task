@@ -16,7 +16,7 @@ public class JsonUtilHelper {
     public static String TAG ="JsonUtilHelper";
 
     /**
-     *
+     *method to get an array from the response
      * @param pObjKey
      * @param pRawJson
      * @return
@@ -44,7 +44,7 @@ public class JsonUtilHelper {
     }
 
     /**
-     *
+     *method to get the nested array from response,provided with array and object name
      * @param pObjKey
      * @param pNestedKey
      * @param pRawJson

@@ -3,12 +3,11 @@ package com.guru.nowplaying.helpers;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.guru.nowplaying.datamodel.CastJdo;
-import com.guru.nowplaying.datamodel.MovieDataById;
-import com.guru.nowplaying.datamodel.NowPlaying;
-import com.guru.nowplaying.datamodel.VideosJDO;
+import com.guru.nowplaying.pojos.Cast;
+import com.guru.nowplaying.pojos.MovieData;
+import com.guru.nowplaying.pojos.MovieListingData;
+import com.guru.nowplaying.pojos.Videos;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,50 +21,39 @@ public class JsonParserHelper {
     private ObjectMapper mObjectMapper = new ObjectMapper();
     public static String TAG = "JsonParserHelper";
 
-
-
     /**
-     *
+     *parses data for now playing list saves to a array list
      * @param pJsonResponse
-     * @return
+     * @return array list of saved values for NOW PLAY LIST
      */
-    public ArrayList<NowPlaying> ParseNowPlayingList(String pJsonResponse)
+    public ArrayList<MovieListingData> ParseNowPlayingList(String pJsonResponse)
     {
         Log.d(TAG+"raw Response to parser",pJsonResponse);
-        TypeReference<ArrayList<NowPlaying>>lTypeReference = new TypeReference<ArrayList<NowPlaying>>() {
-        };
 
-        ArrayList<NowPlaying> lNowPlaying = null;
+        ArrayList<MovieListingData> lNowPlayingData = null;
         try {
-            lNowPlaying = mObjectMapper.readValue(pJsonResponse,new TypeReference<ArrayList<NowPlaying>>() {});
+            lNowPlayingData = mObjectMapper.readValue(pJsonResponse,new TypeReference<ArrayList<MovieListingData>>() {});
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(TAG,"Problem with parsing");
         }
-        //readValues(pJsonObject, lTypeReference);
-
-        return lNowPlaying;
+        return lNowPlayingData;
     }
 
     /**
-     *
+     * method to parse  the MovieData
      * @param pJsonResponse
-     * @return
+     * @return MovieData object
      */
-    public MovieDataById parseMovieData(String pJsonResponse)
+    public MovieData parseMovieData(String pJsonResponse)
     {
-        TypeReference<MovieDataById> lTypeReference = new TypeReference<MovieDataById>() {
-        };
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_EXTERNAL_TYPE_ID_PROPERTY,false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS,false);
-        // mObjectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE,true);
-        MovieDataById lMovieDataById = new MovieDataById();
+
+        Log.d(TAG+"raw Response to parser",pJsonResponse);
+
+        MovieData lMovieData;
         try {
-            lMovieDataById = mObjectMapper.readValue(pJsonResponse,lTypeReference);
-            return  lMovieDataById;
+            lMovieData = mObjectMapper.readValue(pJsonResponse,MovieData.class);
+            return lMovieData;
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(TAG,"Problem with parsing");
@@ -76,57 +64,44 @@ public class JsonParserHelper {
     }
 
     /**
-     *
+     * method to parse the video data from response
      * @param pJsonResponse
-     * @return
+     * @return array list of Videos parsed.
      */
-    public ArrayList<VideosJDO> ParseNowVideosList(String pJsonResponse)
+    public ArrayList<Videos> ParseNowVideosList(String pJsonResponse)
     {
         Log.d(TAG+"raw Response to parser",pJsonResponse);
-        TypeReference<ArrayList<VideosJDO>>lTypeReference = new TypeReference<ArrayList<VideosJDO>>() {
+        TypeReference<ArrayList<Videos>>lTypeReference = new TypeReference<ArrayList<Videos>>() {
         };
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_EXTERNAL_TYPE_ID_PROPERTY,false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS,false);
-        // mObjectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE,true);
-        ArrayList<VideosJDO> lVideosList = null;
+
+        ArrayList<Videos> lVideosList = null;
         try {
             lVideosList = mObjectMapper.readValue(pJsonResponse,lTypeReference);
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(TAG,"Problem with parsing");
         }
-        //readValues(pJsonObject, lTypeReference);
 
         return lVideosList;
     }
 
     /**
-     *
+     * method to parse the cast from response to arrayList of Cast's object.
      * @param pJsonResponse
-     * @return
+     * @return array list of cast's ArrayList
      */
-    public ArrayList<CastJdo> ParseCastList(String pJsonResponse)
+    public ArrayList<Cast> ParseCastList(String pJsonResponse)
     {
         Log.d(TAG+"raw Response to parser",pJsonResponse);
-        TypeReference<ArrayList<CastJdo>>lTypeReference = new TypeReference<ArrayList<CastJdo>>() {
+        TypeReference<ArrayList<Cast>>lTypeReference = new TypeReference<ArrayList<Cast>>() {
         };
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_EXTERNAL_TYPE_ID_PROPERTY,false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,false);
-        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS,false);
-        // mObjectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE,true);
-        ArrayList<CastJdo> lCastList = null;
+        ArrayList<Cast> lCastList = null;
         try {
             lCastList = mObjectMapper.readValue(pJsonResponse,lTypeReference);
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(TAG,"Problem with parsing");
         }
-        //readValues(pJsonObject, lTypeReference);
 
         return lCastList;
     }

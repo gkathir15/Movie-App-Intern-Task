@@ -16,7 +16,7 @@ public class SharedPreferencesHelper {
     public  static String TAG = "SharedPreferencesHelper";
 
     /**
-     *
+     *setting up shared preferences that data is fetched and stored in db.
      * @param isStored
      * @param pContext
      */
@@ -31,9 +31,9 @@ public class SharedPreferencesHelper {
     }
 
     /**
-     *
+     *check if the data is being present int the db
      * @param pContext
-     * @return
+     * @return true if data is present
      */
     public boolean isNowPlayDataPresent(Context pContext)
     {

@@ -14,7 +14,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     public static int DATABASE_VERSION =1;
     Context mContext;
-   // MovieDBHelper mNowPlayListDBHelper = new MovieDBHelper(mContext);
+   // MovieTable mNowPlayListDBHelper = new MovieTable(mContext);
 
 
     public AppDBHelper(Context pContext) {
@@ -25,7 +25,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        MovieDBHelper.createNowPlayingTable(db);
+        MovieTable.createNowPlayingTable(db);
 
     }
 

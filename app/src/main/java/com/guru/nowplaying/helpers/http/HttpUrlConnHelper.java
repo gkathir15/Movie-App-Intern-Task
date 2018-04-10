@@ -25,7 +25,7 @@ public class HttpUrlConnHelper {
 
 
     /**
-     *
+     * method to perform Http requests and returning data to the httpHelper class's object
      * @param pHttpHelper
      * @return
      * @throws IOException
@@ -36,7 +36,6 @@ public class HttpUrlConnHelper {
         try {
             mHttpURLConnection = (HttpURLConnection) new URL(pHttpHelper.getURL()).openConnection();
             Log.d(TAG+"HttpReq", String.valueOf(pHttpHelper.getURl()));
-            mHttpURLConnection.setDoInput(true);
 
             if (pHttpHelper.getHeaderType() != null) {
                 mHttpURLConnection.setRequestProperty("Content-Type", pHttpHelper.getHeaderType());
@@ -51,13 +50,10 @@ public class HttpUrlConnHelper {
                     lOutputStreamWriter.flush();
 
                 }
-
-                if (pHttpHelper.getRequestType().equalsIgnoreCase("GET"))
-                {
-                    mHttpURLConnection.setDoOutput(true);
-                }
-
-
+            }
+            if (pHttpHelper.getRequestType().equalsIgnoreCase("GET"))
+            {
+                mHttpURLConnection.setDoInput(true);
             }
 
             mHttpURLConnection.setRequestMethod(mHttpURLConnection.getRequestMethod());

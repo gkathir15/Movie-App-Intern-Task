@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.guru.nowplaying.R;
 import com.guru.nowplaying.constants.Constants;
-import com.guru.nowplaying.datamodel.NowPlaying;
+import com.guru.nowplaying.pojos.MovieListingData;
 import com.guru.nowplaying.interfaces.OnItemClickListener;
 import com.squareup.picasso.Picasso;
 
@@ -25,16 +25,16 @@ import java.util.ArrayList;
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
 
 
-    ArrayList<NowPlaying> mNowPlayArrayList;
+    ArrayList<MovieListingData> mNowPlayArrayList;
     OnItemClickListener mOnItemClickListener;
     int mListItemView;
     public static String TAG = "MovieListAdapter";
 
 
 
-    public MovieListAdapter(int pListItem,ArrayList<NowPlaying> pNowPlaying)
+    public MovieListAdapter(int pListItem,ArrayList<MovieListingData> pNowPlayingData)
     {
-        mNowPlayArrayList = pNowPlaying;
+        mNowPlayArrayList = pNowPlayingData;
         mListItemView = pListItem;
         Log.d(TAG+" constructor","Recieved Size"+mNowPlayArrayList.size());
 //        Log.d(TAG,mNowPlayArrayList.get(0).getTitle());
@@ -55,13 +55,13 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull MovieListAdapter.ViewHolder holder, int position) {
 
-        NowPlaying lNowPlaying = mNowPlayArrayList.get(position);
+        MovieListingData lMovieListingData = mNowPlayArrayList.get(position);
         TextView lTitle = holder.lTitle;
         ImageView lPoster = holder.lPoster;
-        lPoster.setContentDescription((CharSequence) lNowPlaying.getOverview());
-        lTitle.setText(lNowPlaying.getTitle());
+        lPoster.setContentDescription((CharSequence) lMovieListingData.getOverview());
+        lTitle.setText(lMovieListingData.getTitle());
         //lTitle.set
-        Picasso.get().load(Constants.IMAGE_PREFIX+ lNowPlaying.getPoster_path()).into(lPoster);
+        Picasso.get().load(Constants.IMAGE_PREFIX_W300 + lMovieListingData.getPosterPath()).placeholder(R.mipmap.movie_place).into(lPoster);
         Log.d(TAG,"OnBindview"+mNowPlayArrayList.size());
 
     }

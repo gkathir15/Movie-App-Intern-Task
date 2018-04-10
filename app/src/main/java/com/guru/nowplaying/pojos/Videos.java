@@ -1,10 +1,12 @@
-package com.guru.nowplaying.datamodel;
+package com.guru.nowplaying.pojos;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by Guru on 06-04-2018.
  */
-
-public class VideosJDO {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Videos {
 
 
 

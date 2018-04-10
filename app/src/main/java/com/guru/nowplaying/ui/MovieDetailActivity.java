@@ -1,114 +1,187 @@
 package com.guru.nowplaying.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.guru.nowplaying.R;
+import com.guru.nowplaying.adapter.CastListAdapter;
 import com.guru.nowplaying.constants.Constants;
-import com.guru.nowplaying.datamodel.CastJdo;
-import com.guru.nowplaying.datamodel.MovieDataById;
-import com.guru.nowplaying.datamodel.VideosJDO;
+import com.guru.nowplaying.helpers.ApiHelper;
+import com.guru.nowplaying.pojos.Cast;
+import com.guru.nowplaying.pojos.MovieData;
+import com.guru.nowplaying.pojos.Videos;
 import com.guru.nowplaying.helpers.JsonParserHelper;
 import com.guru.nowplaying.helpers.JsonUtilHelper;
+import com.guru.nowplaying.helpers.db.MovieTable;
 import com.guru.nowplaying.helpers.http.HttpHelper;
 import com.guru.nowplaying.helpers.http.HttpUrlConnHelper;
+import com.guru.nowplaying.interfaces.OnItemClickListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity  implements OnItemClickListener{
 
-    ArrayList<VideosJDO> mVideosList = new ArrayList<>();
-    ArrayList<CastJdo>    mCastList = new ArrayList<>();
-    HttpHelper mhttpHelper;
-    MovieDataById mMovieDataById;
+    ArrayList<Videos> mVideosList = new ArrayList<>();
+    ArrayList<Cast> mCastList = new ArrayList<>();
+    HttpHelper mHttpHelper;
+    MovieData mMovieData;
     ProgressBar mProgressBar;
+    Toolbar mToolbar;
+    String mReceivedMovieID;
     public static String TAG = "MovieDetailActivity";
 
-    TextView mTitleTv,mDescriptionTv,mTagLineTv,mWeblinkTv;
+    TextView mTitleTv, mDescriptionTv, mTagLineTv, mWeblinkTv;
     ProgressBar mVoteProgress;
     ImageView mPosterIv;
+    ImageView mBackDropIv;
+    NestedScrollView mMovieScrollView;
+    RelativeLayout mMovieDetailLayout;
+    RecyclerView mCastRecyclerView;
+    CastListAdapter mCastListAdapter;
+    FloatingActionButton mFavouriteFAB;
+    Boolean mIsFavourite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+       // mToolbar.setNavigationIcon(R.drawable.back);
 
+        mBackDropIv = findViewById(R.id.colapsing_image_poster);
+        mProgressBar = findViewById(R.id.loading_progress);
         mTitleTv = findViewById(R.id.movie_title);
         mDescriptionTv = findViewById(R.id.movie_description);
         mTagLineTv = findViewById(R.id.tag_line);
         mWeblinkTv = findViewById(R.id.web_link);
         mPosterIv = findViewById(R.id.movie_poster);
-       // mVoteProgress = findViewById(R.id.votes);
-      //  mVoteProgress.setMax(10);
-        //mVoteProgress.setVisibility(View.INVISIBLE);
+        mMovieScrollView = findViewById(R.id.movie_scroll_view);
+        mMovieDetailLayout = findViewById(R.id.movie_detail_layout);
+        mCastRecyclerView = findViewById(R.id.cast_recycler_list);
+        mCastRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        mCastListAdapter = new CastListAdapter(R.layout.cast_card_view,mCastList);
+        mCastRecyclerView.setAdapter(mCastListAdapter);
+        mCastListAdapter.setClickListener( this);
+        mProgressBar.setVisibility(View.INVISIBLE);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFavouriteFAB = findViewById(R.id.fab);
+        mFavouriteFAB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                mIsFavourite = !mIsFavourite;
+                if (mIsFavourite) {
+                    mFavouriteFAB.setImageResource(R.drawable.is_fav);
+                }
+                else {
+                    mFavouriteFAB.setImageResource(R.drawable.not_fav);
+                }
+                //db insertion
+                new MovieTable(MovieDetailActivity.this).setMovieAsFavourite(mIsFavourite,mMovieData.getId());
             }
         });
-        mhttpHelper = new HttpHelper();
-        mMovieDataById = new MovieDataById();
-        Intent mIntent = getIntent();
-        mhttpHelper.setURL(mMovieDataById.constructURL(mIntent.getStringExtra("MOVIE_ID")));
-        new FetchMovieById().execute(mhttpHelper);
 
-
-
+        mHttpHelper = new HttpHelper();
+        mMovieData = new MovieData();
+        Intent lIntent = getIntent();
+        mReceivedMovieID = lIntent.getStringExtra("MOVIE_ID");
+        mHttpHelper.setRequestType("GET");
+        mHttpHelper.setURL(new ApiHelper().constructUrlByMovieId(mReceivedMovieID));
+        new FetchMovieById().execute(mHttpHelper);
 
 
         //Network calls and database requests
 
     }
 
-    class FetchMovieById extends AsyncTask<HttpHelper,Void,MovieDataById>
-    {
+
+
+    @Override
+    public void onClick(View View, int Position) {
+        Log.d(TAG,"setClick listener");
+
+    }
+
+
+
+    class FetchMovieById extends AsyncTask<HttpHelper, Void, MovieData> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
 //            mProgressBar.setMax(100);
-
 
 
         }
 
         @Override
-        protected void onPostExecute(MovieDataById movieDataById) {
-            super.onPostExecute(movieDataById);
+        protected void onPostExecute(MovieData movieData) {
+            super.onPostExecute(movieData);
 
-            Log.d(TAG,"Movie data"+movieDataById.getTitle());
+            Log.d(TAG, "Movie data" + movieData.getTitle());
+            Log.d(TAG, "Movie data" + movieData.getTitle());
 
-            Picasso.get().load(Constants.IMAGE_PREFIX+movieDataById.getPoster_path()).into(mPosterIv);
-            Log.d(TAG,"Picasso  "+Constants.IMAGE_PREFIX+movieDataById.getPoster_path());
-            mTitleTv.setText(movieDataById.getTitle());
-            mTagLineTv.setText(movieDataById.getTagline());
-            mDescriptionTv.setText(movieDataById.getOverview());
-            mWeblinkTv.setText(movieDataById.getHomepage());
-            // implement on click listener for webview implementation.
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                mVoteProgress.setProgress(Integer.parseInt(movieDataById.getVote_average()),true);
-//            }
-//            else
-//            mVoteProgress.setProgress(Integer.parseInt(movieDataById.getVote_average()));
+
+
+            Picasso.get().load(Constants.IMAGE_PREFIX_W300+movieData.getBackdropPath()).into(mBackDropIv);
+
+//            Picasso.get().load(Constants.IMAGE_PREFIX_W300 + movieData.getPosterPath()).into(new Target() {
+//                @Override
+//                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                    mMovieScrollView.setBackground(new BitmapDrawable(getResources(), bitmap));
+//
+//                }
+//
+//                @Override
+//                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+//
+//                }
+//
+//                @Override
+//                public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                }
+//            });
+
+
+            Picasso.get().load(Constants.IMAGE_PREFIX_W300 + movieData.getPosterPath()).into(mPosterIv);
+            Log.d(TAG, "Picasso  " + Constants.IMAGE_PREFIX_W300 + movieData.getPosterPath());
+            mTitleTv.setText(movieData.getTitle());
+            mTagLineTv.setText(movieData.getTagline());
+            mDescriptionTv.setText(movieData.getOverview());
+            mWeblinkTv.setText(movieData.getHomepage());
+            mIsFavourite = movieData.isFavourite();
+
+            if (mIsFavourite) {
+                mFavouriteFAB.setImageResource(R.drawable.is_fav);
+            }
+            else {
+                mFavouriteFAB.setImageResource(R.drawable.not_fav);
+            }
+
+            mCastListAdapter.notifyDataSetChanged();
+            mProgressBar.setVisibility(View.INVISIBLE);
+
 
 
         }
@@ -119,38 +192,74 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         @Override
-        protected MovieDataById doInBackground(HttpHelper... httpHelpers) {
+        protected MovieData doInBackground(HttpHelper... httpHelpers) {
+            JsonParserHelper mJsonParserHelper = new JsonParserHelper();
+            JsonUtilHelper mJsonUtilHelper = new JsonUtilHelper();
 
-            HttpUrlConnHelper lHttpUrlConnHelper = new HttpUrlConnHelper();
-            try {
-                lHttpUrlConnHelper.httpRequest(httpHelpers[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (httpHelpers[0].getStatusCode() == 200) {
-
-
-                JsonParserHelper lJsonParserHelper = new JsonParserHelper();
-                mMovieDataById = lJsonParserHelper.parseMovieData(httpHelpers[0].getRawResponseData());
-                Log.d(TAG,"Movie data"+mMovieDataById.getTitle());
-                JsonUtilHelper lJsonUtilHelper = new JsonUtilHelper();
-                mVideosList.addAll(lJsonParserHelper.ParseNowVideosList(lJsonUtilHelper.jsonNestedObjectToArray("videos","results",httpHelpers[0].getRawResponseData())));
-                Log.d(TAG,"Size of videos"+mVideosList.size());
-                Log.d(TAG,"Size of videos"+mVideosList.get(0).getName());
-
-                mCastList.addAll(lJsonParserHelper.ParseCastList(lJsonUtilHelper.jsonNestedObjectToArray("credits","cast",httpHelpers[0].getRawResponseData())));
-
-                Log.d(TAG,"Size of cast"+mCastList.size());
-
-
+            MovieTable lMovieTable = new MovieTable(MovieDetailActivity.this);
+            mMovieData = lMovieTable.getMovieDataByID(mReceivedMovieID);
+            if (mMovieData.isDetailPresent())
+            {
+                Log.d(TAG,"fetching from db");
+                mCastList.addAll(mJsonParserHelper.ParseCastList(mJsonUtilHelper.jsonNestedObjectToArray("credits", "cast", mMovieData.getCastJsonArray())));
+                return mMovieData;
 
             }
+            else
+                {
+                    Log.d(TAG,"fetching from internet");
+
+
+                HttpUrlConnHelper lHttpUrlConnHelper = new HttpUrlConnHelper();
+                try {
+                    lHttpUrlConnHelper.httpRequest(httpHelpers[0]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (httpHelpers[0].getStatusCode() == 200) {
 
 
 
-                return mMovieDataById;
+                    mMovieData = mJsonParserHelper.parseMovieData(httpHelpers[0].getRawResponseData());
+                    Log.d(TAG, "Movie data" + mMovieData.getTitle());
+
+                    mVideosList.addAll(mJsonParserHelper.ParseNowVideosList(mJsonUtilHelper.jsonNestedObjectToArray("videos", "results", httpHelpers[0].getRawResponseData())));
+                    mMovieData.setCastJsonArray(mJsonUtilHelper.jsonNestedObjectToArray("credits", "cast", httpHelpers[0].getRawResponseData()));
+                   // mMovieData.setYoutubeVideoKey();
+                    Log.d(TAG, "Size of videos" + mVideosList.size());
+                    //Log.d(TAG, "Size of videos" + mVideosList.get(0).getName());
+                    mCastList.addAll(mJsonParserHelper.ParseCastList(mJsonUtilHelper.jsonNestedObjectToArray("credits", "cast", httpHelpers[0].getRawResponseData())));
+                    Log.d(TAG, "Size of cast" + mCastList.size());
+
+                   // getting youtube Video key to play
+                    for(Videos pVideos : mVideosList)
+                    {
+                        //Log.d(TAG,pVideos.getName());
+                        if (pVideos.getName().contains("Official"))
+                        {
+                            mMovieData.setYoutubeVideoKey(pVideos.getKey());
+                            Log.d(TAG,"youtube key  "+ pVideos.getKey());
+                            break;
+                        }
+                        if (mMovieData.getYoutubeVideoKey() == null)
+                        {
+                            mMovieData.setYoutubeVideoKey(mVideosList.get(0).getKey());
+                            Log.d(TAG,"youtube key  "+ pVideos.getKey());
+                        }
+
+
+                    }
+
+                    lMovieTable.updateMovieDetailData(mMovieData);
+
+
+                }
+                return mMovieData;
+
+
+            }
+
+
         }
-
-
     }
 }
