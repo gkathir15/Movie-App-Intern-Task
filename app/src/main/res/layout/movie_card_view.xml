@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/poster"
-            tools:src="@mipmap/placeholder1"/>
+            tools:src="@mipmap/placeholder1"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:layout_width="match_parent"

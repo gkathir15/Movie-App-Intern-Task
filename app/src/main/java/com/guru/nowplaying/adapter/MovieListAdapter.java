@@ -36,8 +36,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     {
         mNowPlayArrayList = pNowPlayingData;
         mListItemView = pListItem;
-        Log.d(TAG+" constructor","Recieved Size"+mNowPlayArrayList.size());
-//        Log.d(TAG,mNowPlayArrayList.get(0).getTitle());
+
 
     }
 

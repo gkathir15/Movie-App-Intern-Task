@@ -3,14 +3,18 @@ package com.guru.nowplaying.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.guru.nowplaying.R;
+import com.guru.nowplaying.constants.Constants;
 
 import java.util.List;
 
@@ -20,6 +24,10 @@ import java.util.List;
  */
 public class YoutubePlayerFragment extends Fragment implements YouTubePlayer {
 
+    String mVideoKey;
+    public static String TAG = "YoutubePlayerFragment";
+
+
 
 
     public YoutubePlayerFragment() {
@@ -27,11 +35,37 @@ public class YoutubePlayerFragment extends Fragment implements YouTubePlayer {
     }
 
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        YouTubePlayerSupportFragment lYouTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance();
+
+        mVideoKey = getArguments().getString("YoutubeKey");
+
+        lYouTubePlayerSupportFragment.initialize(Constants.YT_API_KEY, new OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                if (!b){
+                    youTubePlayer.setFullscreen(true);
+                    youTubePlayer.loadVideo(mVideoKey);
+                    youTubePlayer.play();
+                }
+            }
+
+            @Override
+            public void onInitializationFailure(Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                Log.d(TAG,"youtube init failure");
+
+            }
+        });
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_youtube_player, container, false);
+
+
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,7 +33,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentNowPlayingList extends Fragment implements OnItemClickListener {
+public class FragmentNowPlayingList extends Fragment implements OnItemClickListener,SwipeRefreshLayout.OnRefreshListener {
 
     RecyclerView mNowPlayRecyclerView;
     ProgressBar mLoadingProgress;
@@ -43,6 +44,8 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
     ArrayList<MovieListingData> mMovieListingDataArrayList = new ArrayList<>();
     MovieTable mMovieTable;
     SharedPreferencesHelper mSharedPreferencesHelper = new SharedPreferencesHelper();
+    int mPageNo = 1;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -59,6 +62,7 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
 
         mLoadingProgress = lMovieListView.findViewById(R.id.movie_list_progress);
         mNowPlayRecyclerView = lMovieListView.findViewById(R.id.now_play_Recycler);
+        mSwipeRefreshLayout = lMovieListView.findViewById(R.id.now_play_SwipeRefresh);
         mMovieTable = new MovieTable(getContext());
         // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
         mMovieTable = new MovieTable(getContext());
@@ -70,6 +74,7 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
         mNowPlayRecyclerView.setAdapter(mMovieListAdapter);
         mMovieListAdapter.setClickListener(this);
 
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         return lMovieListView;
     }
 
@@ -85,12 +90,20 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
 
     }
 
+    @Override
+    public void onRefresh() {
+        Log.d(TAG,"  Swipe refresh");
+        mPageNo = ++mPageNo;
+        new FetchMovieList(mPageNo).execute();
+    }
+
+
     public class FetchMovieList extends AsyncTask<Void, Void, List<MovieListingData>> {
 
         int mURlPageNo;
 
         public FetchMovieList(int pUrlPage) {
-            mURlPageNo = pUrlPage;
+            this.mURlPageNo = pUrlPage;
 
         }
 
@@ -106,9 +119,10 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
         protected List<MovieListingData> doInBackground(Void... voids) {
 
 
-            if (!mSharedPreferencesHelper.isNowPlayDataPresent(getContext())) {
+//            if (!mSharedPreferencesHelper.isNowPlayDataPresent(getContext())) {
                 mHttpHelper.setRequestType("GET");
                 mHttpHelper.setURL(new ApiHelper().constructNowPlayingUrlByPage(String.valueOf(mURlPageNo)));
+                Log.d(TAG,"URL  "+mHttpHelper.getURL());
                 HttpUrlConnHelper lHttpUrlConnHelper = new HttpUrlConnHelper();
                 Log.d(TAG + "  URL", mHttpHelper.getURL());
                 try {
@@ -126,25 +140,27 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
                     Log.d(TAG, "ArraylistSize 1111  " + mMovieListingDataArrayList.size());
                     mMovieTable.updateNowPlayingData(lJsonParserHelper.ParseNowPlayingList(lJsonUtilHelper.jsonObjectToArray("results", mHttpHelper.getRawResponseData())));
                     mMovieListingDataArrayList.addAll(mMovieTable.retrieveForNowPlayingList());
-                    mSharedPreferencesHelper.setNowPlayingDataStored(true, getContext());
+                  //  mSharedPreferencesHelper.setNowPlayingDataStored(true, getContext());
                     Log.d(TAG, "Retrived from db Size" + mMovieListingDataArrayList.size());
-                    return mMovieListingDataArrayList;
+                   // return mMovieListingDataArrayList;
+//                }
+////            } else {
+////                mMovieListingDataArrayList.addAll(mMovieTable.retrieveForNowPlayingList());
+////                Log.d(TAG, "Retrived from db Size" + mMovieListingDataArrayList.size());
+////                return mMovieListingDataArrayList;
+////
+////            }
+////
+////            // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
+////
+////            Log.d(TAG, "Size form db" + mMovieTable.retrieveForNowPlayingList().size());
+////
+////            Log.d(TAG, "ArraylistSize 1111  " + mMovieListingDataArrayList.size());
+////
+////
                 }
-            } else {
-                mMovieListingDataArrayList.addAll(mMovieTable.retrieveForNowPlayingList());
-                Log.d(TAG, "Retrived from db Size" + mMovieListingDataArrayList.size());
-                return mMovieListingDataArrayList;
-
-            }
-
-            // AppDBHelper lappDBHelper = new AppDBHelper(MainActivity.this);
-
-            Log.d(TAG, "Size form db" + mMovieTable.retrieveForNowPlayingList().size());
-
-            Log.d(TAG, "ArraylistSize 1111  " + mMovieListingDataArrayList.size());
-
-
-            return null;
+           //return null;
+            return mMovieListingDataArrayList;
         }
 
         @Override
@@ -159,6 +175,7 @@ public class FragmentNowPlayingList extends Fragment implements OnItemClickListe
 
             mMovieListAdapter.notifyDataSetChanged();
             mLoadingProgress.setVisibility(View.INVISIBLE);
+            mSwipeRefreshLayout.setRefreshing(false);
 
             if (nowPlayingData != null) {
 

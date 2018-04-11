@@ -37,8 +37,17 @@ public class ApiHelper {
     {
         //Sample URL  https://api.themoviedb.org/3/movie/now_playing?api_key=461e99d35de36a0e9680f40b1b06073c&page=1
 
-        Log.d("ConstructedURL",Constants.ROOT_URL+Constants.NOW_PLAYING+ Constants.API_PREFIX+Constants.API_KEY_V3+"&"+pPage);
-        return Constants.ROOT_URL+Constants.NOW_PLAYING+ Constants.API_PREFIX+Constants.API_KEY_V3+"&"+pPage;
+        Log.d("ConstructedURL",Constants.ROOT_URL+Constants.NOW_PLAYING+ Constants.API_PREFIX+Constants.API_KEY_V3+"&"+Constants.PAGE+pPage);
+        return Constants.ROOT_URL+Constants.NOW_PLAYING+ Constants.API_PREFIX+Constants.API_KEY_V3+"&"+Constants.PAGE+pPage;
+
+    }
+
+    public String constructUpcomingMoviesUrlByPage( String pPage)
+    {
+        //Sample URL  https://api.themoviedb.org/3/movie/now_playing?api_key=461e99d35de36a0e9680f40b1b06073c&page=1
+
+        Log.d("ConstructedURL",Constants.ROOT_URL+Constants.UPCOMING+ Constants.API_PREFIX+Constants.API_KEY_V3+"&"+Constants.PAGE+pPage);
+        return Constants.ROOT_URL+Constants.UPCOMING+ Constants.API_PREFIX+Constants.API_KEY_V3+"&"+Constants.PAGE+pPage;
 
     }
 

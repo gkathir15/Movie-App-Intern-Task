@@ -30,7 +30,7 @@ public class MovieTable {
     }
 
     /**
-     *
+     *creating data with the database schema
      * @param pSqLiteDatabase
      */
     public static void createNowPlayingTable(SQLiteDatabase pSqLiteDatabase)
@@ -42,8 +42,8 @@ public class MovieTable {
                 + MovieDataEntry.COLUMN_NAME_TITLE + " TEXT NOT NULL,"
                 + MovieDataEntry.COLUMN_NAME_RELEASE_DATE + " TEXT,"
                 + MovieDataEntry.COLUMN_NAME_VOTE_AVERAGE + " TEXT," +
-                MovieDataEntry.COLUMN_NAME_POSTER+" TEXT NOT NULL,"+
-                MovieDataEntry.COLUMN_NAME_BACKDROP_PATH+" TEXT NOT NULL,"+
+                MovieDataEntry.COLUMN_NAME_POSTER+" TEXT,"+
+                MovieDataEntry.COLUMN_NAME_BACKDROP_PATH+" TEXT,"+
                 MovieDataEntry.COLUMN_NAME_TAGLINE+" TEXT,"+
                 MovieDataEntry.COLUMN_NAME_STATUS+" TEXT,"+
                 MovieDataEntry.COLUMN_NAME_IS_FAVOURITE+" BOOLEAN,"+
@@ -56,7 +56,7 @@ public class MovieTable {
     }
 
     /**
-     *
+     * retrieve stored data in now playing list to a arrayList.
      * @return
      */
     public ArrayList<MovieListingData> retrieveForNowPlayingList()
@@ -95,7 +95,7 @@ public class MovieTable {
 
 
     /**
-     *
+     *update the data fetched from now play list
      * @param pNowplayingArrayList
      */
     public void updateNowPlayingData(ArrayList<MovieListingData> pNowplayingArrayList)
@@ -105,8 +105,6 @@ public class MovieTable {
         ContentValues lContentValues = new ContentValues();
         for(MovieListingData pMovieListingData : pNowplayingArrayList)
         {
-
-            lContentValues.put(MovieDataEntry.COLUMN_NAME_BACKDROP_PATH, pMovieListingData.getBackdropPath());
             lContentValues.put(MovieDataEntry.COLUMN_NAME_ID, pMovieListingData.getId());
             lContentValues.put(MovieDataEntry.COLUMN_NAME_TITLE, pMovieListingData.getTitle());
             lContentValues.put(MovieDataEntry.COLUMN_NAME_POSTER, pMovieListingData.getPosterPath());
@@ -121,7 +119,7 @@ public class MovieTable {
         }
 
     /**
-     *
+     * update the data from movie by ID fetch
      * @param pMovieData
      */
     public void updateMovieDetailData(MovieData pMovieData)
@@ -153,7 +151,7 @@ public class MovieTable {
     }
 
     /**
-     * It is used to get the movie data by the movie id.
+     * to get the movie data by the movie id.
      * @param pMovieID
      * @return
      */
@@ -187,7 +185,7 @@ public class MovieTable {
                     lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_RELEASE_DATE)),
                     lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_POSTER)),
                     lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_TAGLINE)),
-                    Boolean.getBoolean( lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_IS_FAVOURITE))),
+                    Boolean.parseBoolean( lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_IS_FAVOURITE))),
                     lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_YOUTUBE_VIDEO_KEY)),
                     lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_CAST_DATA)),
                     Boolean.getBoolean(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_IS_DETAIL_STORED))));
@@ -205,7 +203,7 @@ public class MovieTable {
     }
 
     /**
-     *
+     * marking the boolean value is favourite to true or false on the provided params
      * @param pIsFav
      * @param pMovieID
      */
@@ -215,33 +213,34 @@ public class MovieTable {
         mSqLiteDatabase = new AppDBHelper(mContext).getWritableDatabase();
         ContentValues lContentValues = new ContentValues();
 
-        lContentValues.put(MovieDataEntry.COLUMN_NAME_ID,pMovieID);
         lContentValues.put(MovieDataEntry.COLUMN_NAME_IS_FAVOURITE,pIsFav);
         mSqLiteDatabase.updateWithOnConflict(MovieDataEntry.TABLE_NAME,lContentValues,MovieDataEntry.COLUMN_NAME_ID+"= "+pMovieID,null,SQLiteDatabase.CONFLICT_REPLACE);
         mSqLiteDatabase.close();
     }
 
     /**
-     *
+     * get the favourites marked movies in an list
      * @return array list of favourite movies
      */
     public ArrayList<MovieListingData> getFavouriteMovies()
     {
         ArrayList<MovieListingData> lFavouriteList = new ArrayList<>();
         mSqLiteDatabase = new AppDBHelper(mContext).getReadableDatabase();
-        MovieListingData movieListingData = new MovieListingData();
+
        String  lSearchQuery = "SELECT * FROM "+ MovieDataEntry.TABLE_NAME + " WHERE "+ MovieDataEntry.COLUMN_NAME_IS_FAVOURITE + "= "+ "1";
         Cursor lCursor = mSqLiteDatabase.rawQuery(lSearchQuery,null);
         if (lCursor.moveToFirst())
         {
             do {
-                movieListingData.setId(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_ID)));
-                movieListingData.setPosterPath(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_POSTER)));
-                movieListingData.setTitle(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_TITLE)));
-                movieListingData.setReleaseDate(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_RELEASE_DATE)));
-                movieListingData.setVoteAverage(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_VOTE_AVERAGE)));
+                MovieListingData lMovieListingData = new MovieListingData();
 
-                lFavouriteList.add(movieListingData);
+                lMovieListingData.setId(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_ID)));
+                lMovieListingData.setPosterPath(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_POSTER)));
+                lMovieListingData.setTitle(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_TITLE)));
+                lMovieListingData.setReleaseDate(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_RELEASE_DATE)));
+                lMovieListingData.setVoteAverage(lCursor.getString(lCursor.getColumnIndex(MovieDataEntry.COLUMN_NAME_VOTE_AVERAGE)));
+
+                lFavouriteList.add(lMovieListingData);
 
             }while (lCursor.moveToNext());
         }

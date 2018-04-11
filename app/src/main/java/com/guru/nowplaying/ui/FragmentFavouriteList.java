@@ -29,7 +29,6 @@ public class FragmentFavouriteList extends Fragment implements OnItemClickListen
 
     RecyclerView mFavouritesRecyclerView;
     ProgressBar mLoadingProgress;
-    MovieListingData mMovieListingData = new MovieListingData();
     public static String TAG = "FragmentFavouriteList";
     MovieListAdapter mFavMovieListAdapter;
     ArrayList<MovieListingData> mFavMovieListingDataArrayList = new ArrayList<>();
@@ -48,7 +47,7 @@ public class FragmentFavouriteList extends Fragment implements OnItemClickListen
         mFavouritesRecyclerView = lMovieListView.findViewById(R.id.now_play_Recycler);
         mMovieTable = new MovieTable(getContext());
         //hav network calls and db retrievals
-        new FetchMovieList().execute();
+        new FetchFavMovieList().execute();
         mFavouritesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         mFavMovieListAdapter = new MovieListAdapter(R.layout.movie_card_view, mFavMovieListingDataArrayList);
         mFavouritesRecyclerView.setAdapter(mFavMovieListAdapter);
@@ -68,7 +67,7 @@ public class FragmentFavouriteList extends Fragment implements OnItemClickListen
 
     }
 
-    public class FetchMovieList extends AsyncTask<Void, Void, List<MovieListingData>> {
+    public class FetchFavMovieList extends AsyncTask<Void, Void, List<MovieListingData>> {
 
 
         @Override

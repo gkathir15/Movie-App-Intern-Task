@@ -20,7 +20,7 @@ public class Cast {
     @JsonProperty("cast_id")
     private String castId;
 
-    @JsonProperty("profile_Path")
+    @JsonProperty("profile_path")
     private String profilePath;
 
     private String character;

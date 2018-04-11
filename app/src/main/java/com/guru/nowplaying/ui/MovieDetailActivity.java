@@ -1,12 +1,12 @@
 package com.guru.nowplaying.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,7 +34,6 @@ import com.guru.nowplaying.helpers.http.HttpHelper;
 import com.guru.nowplaying.helpers.http.HttpUrlConnHelper;
 import com.guru.nowplaying.interfaces.OnItemClickListener;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class MovieDetailActivity extends AppCompatActivity  implements OnItemCli
     public static String TAG = "MovieDetailActivity";
 
     TextView mTitleTv, mDescriptionTv, mTagLineTv, mWeblinkTv;
-    ProgressBar mVoteProgress;
+    //ProgressBar mVoteProgress;
     ImageView mPosterIv;
     ImageView mBackDropIv;
     NestedScrollView mMovieScrollView;
@@ -59,6 +58,8 @@ public class MovieDetailActivity extends AppCompatActivity  implements OnItemCli
     RecyclerView mCastRecyclerView;
     CastListAdapter mCastListAdapter;
     FloatingActionButton mFavouriteFAB;
+    ImageView mYoutubePlayButton;
+    CollapsingToolbarLayout mCollapsingToolbar;
     Boolean mIsFavourite = false;
 
     @Override
@@ -69,9 +70,9 @@ public class MovieDetailActivity extends AppCompatActivity  implements OnItemCli
         setSupportActionBar(mToolbar);
        // mToolbar.setNavigationIcon(R.drawable.back);
 
-        mBackDropIv = findViewById(R.id.colapsing_image_poster);
+        mBackDropIv = findViewById(R.id.collapsing_image_poster);
         mProgressBar = findViewById(R.id.loading_progress);
-        mTitleTv = findViewById(R.id.movie_title);
+       // mTitleTv = findViewById(R.id.movie_title);
         mDescriptionTv = findViewById(R.id.movie_description);
         mTagLineTv = findViewById(R.id.tag_line);
         mWeblinkTv = findViewById(R.id.web_link);
@@ -79,6 +80,8 @@ public class MovieDetailActivity extends AppCompatActivity  implements OnItemCli
         mMovieScrollView = findViewById(R.id.movie_scroll_view);
         mMovieDetailLayout = findViewById(R.id.movie_detail_layout);
         mCastRecyclerView = findViewById(R.id.cast_recycler_list);
+        mYoutubePlayButton = findViewById(R.id.play_youtube_button);
+        mCollapsingToolbar = findViewById(R.id.toolbar_layout);
         mCastRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         mCastListAdapter = new CastListAdapter(R.layout.cast_card_view,mCastList);
         mCastRecyclerView.setAdapter(mCastListAdapter);
@@ -98,6 +101,26 @@ public class MovieDetailActivity extends AppCompatActivity  implements OnItemCli
                 }
                 //db insertion
                 new MovieTable(MovieDetailActivity.this).setMovieAsFavourite(mIsFavourite,mMovieData.getId());
+            }
+        });
+
+        mWeblinkTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent lIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mMovieData.getHomepage()));
+                startActivity(lIntent);
+            }
+        });
+
+        mYoutubePlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment lYoutubeFragment = new YoutubePlayerFragment();
+                Bundle lArgsBundle = new Bundle();
+                lArgsBundle.putString("YoutubeKey",mMovieData.getYoutubeVideoKey());
+                lYoutubeFragment.setArguments(lArgsBundle);
+                FragmentManager lFragmentManager = getSupportFragmentManager();
+               // lFragmentManager.beginTransaction().replace(R.id.,lYoutubeFragment).commit();
             }
         });
 
@@ -163,21 +186,27 @@ public class MovieDetailActivity extends AppCompatActivity  implements OnItemCli
 //                }
 //            });
 
+            ;
+            if (!movieData.isFavourite()) {
+                mFavouriteFAB.setImageResource(R.drawable.not_fav);
+                Log.d(TAG," fav data "+movieData.isFavourite());
+            }
+            else {
+                mFavouriteFAB.setImageResource(R.drawable.is_fav);
+                Log.d(TAG," fav data "+movieData.isFavourite());
+            }
 
             Picasso.get().load(Constants.IMAGE_PREFIX_W300 + movieData.getPosterPath()).into(mPosterIv);
             Log.d(TAG, "Picasso  " + Constants.IMAGE_PREFIX_W300 + movieData.getPosterPath());
-            mTitleTv.setText(movieData.getTitle());
+//            mTitleTv.setText(movieData.getTitle());
             mTagLineTv.setText(movieData.getTagline());
             mDescriptionTv.setText(movieData.getOverview());
-            mWeblinkTv.setText(movieData.getHomepage());
-            mIsFavourite = movieData.isFavourite();
+            mWeblinkTv.setText(movieData.getTitle());
+            getSupportActionBar().setTitle(mMovieData.getTitle());
+            mCollapsingToolbar.setTitle(mMovieData.getTitle());
 
-            if (mIsFavourite) {
-                mFavouriteFAB.setImageResource(R.drawable.is_fav);
-            }
-            else {
-                mFavouriteFAB.setImageResource(R.drawable.not_fav);
-            }
+
+
 
             mCastListAdapter.notifyDataSetChanged();
             mProgressBar.setVisibility(View.INVISIBLE);

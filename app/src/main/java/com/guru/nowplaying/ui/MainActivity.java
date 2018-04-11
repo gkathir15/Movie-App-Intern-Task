@@ -9,13 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.facebook.stetho.Stetho;
 import com.guru.nowplaying.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    FragmentNowPlayingList mFragmentNowPlayingList = new FragmentNowPlayingList();
-    FragmentFavouriteList mFragmentFavouriteList = new FragmentFavouriteList();
-    FragmentUpcomingMovies mFragmentUpcomingMovies = new FragmentUpcomingMovies();
+
 
 
 
@@ -28,21 +27,21 @@ public class MainActivity extends AppCompatActivity {
             Fragment lSelectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.now_playing:
-                    lSelectedFragment = mFragmentNowPlayingList;
+                    lSelectedFragment = new FragmentNowPlayingList();
                     break;
                 case R.id.favourites:
 
-                    lSelectedFragment = mFragmentFavouriteList;
+                    lSelectedFragment = new FragmentFavouriteList();
                     break;
                 case R.id.upcoming:
-                    lSelectedFragment = mFragmentUpcomingMovies;
+                    lSelectedFragment = new FragmentUpcomingMovies();
                     break;
             }
                     FragmentTransaction lFragmentTransaction = getSupportFragmentManager().beginTransaction();
                     lFragmentTransaction.replace(R.id.nav_frame,lSelectedFragment);
                     lFragmentTransaction.commit();
 
-            return false;
+            return true;
         }
     };
 
@@ -51,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Stetho.initializeWithDefaults(this);
+
 
 
         BottomNavigationView navigation =findViewById(R.id.navigation);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         //FragmentManager lFragmentManager
         FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-       mFragmentTransaction.replace(R.id.nav_frame,mFragmentNowPlayingList).commit();
+       mFragmentTransaction.replace(R.id.nav_frame,new FragmentNowPlayingList()).commit();
     }
 
 }

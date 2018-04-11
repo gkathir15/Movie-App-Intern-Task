@@ -26,5 +26,7 @@ public class Constants {
     public static String DATABASE_NAME = R.string.app_name+"_DataBase.db";
     public static String VIDEOS = "videos";
     public static String CREDITS = "credits";
+    public static String UPCOMING = "upcoming";
+    public static String YT_API_KEY = "AIzaSyCgMgAiXE_3xpo2ZBKB5mCNQoXzlaacWTA";
 
 }
